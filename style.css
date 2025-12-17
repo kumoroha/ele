@@ -2,6 +2,7 @@ body {
     font-size: 1.2em;
 }
 input {
+    width: 80px;
     font-size: 1.2em;
     margin-top: 5px;
 }
