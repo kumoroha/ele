@@ -28,6 +28,9 @@ function cal() {
 voltbar.addEventListener('input' ,(event) => {
     cal();
 });
-ampr.addEventListenner('input', (event) => {
+ampr.addEventListener('input', (event) => {
+    cal();
+});
+vfr.addEventListener('input', (event) => {
     cal();
 });
