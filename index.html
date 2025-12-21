@@ -4,160 +4,160 @@
     <meta charset="UTF-8">
     <title>電子工作 究極コンパニオンツール</title>
     <style>
-        :root { --primary: #0284c7; --bg: #f1f5f9; --card: #ffffff; }
-        body { font-family: 'Segoe UI', 'Meiryo', sans-serif; background: var(--bg); color: #334155; padding: 20px; line-height: 1.4; }
+        :root { 
+            --primary: #0284c7; --bg: #f1f5f9; --card: #ffffff; 
+            --text: #233145; --border: #e2e8f0; --result-bg: #f0f9ff;
+            --highlight: #22c55e; /* 回路図内の動的数値の色（緑） */
+        }
+        [data-theme="dark"] {
+            --primary: #38bdf8; --bg: #0f172a; --card: #1e293b; 
+            --text: #f1f5f9; --border: #334155; --result-bg: #1e3a8a;
+            --highlight: #4ade80;
+        }
+        body { 
+            font-family: 'Segoe UI', 'Meiryo', sans-serif; 
+            background: var(--bg); color: var(--text); padding: 20px; 
+            transition: 0.3s; line-height: 1.5; 
+            font-size: 17px; /* ★ここで全体の文字サイズを操作★ */
+        }
         .container { max-width: 1200px; margin: auto; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; align-items: start; }
-        .card { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); min-height: 380px; }
-        h2 { font-size: 1.1em; color: var(--primary); border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; margin: 0 0 12px 0; }
-        .input-group { margin-bottom: 12px; }
-        label { display: block; font-size: 0.85em; font-weight: bold; color: #64748b; margin-bottom: 4px; }
-        input, select { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 1em; }
-        .result-box { margin-top: 15px; padding: 15px; background: #f0f9ff; border-radius: 8px; border: 1px solid #bae6fd; font-size: 1em; line-height: 1.5; }
-        .res-val { color: #0369a1; font-weight: bold; font-size: 1.25em; }
-        .warning { color: #dc2626; font-size: 0.85em; font-weight: bold; }
+        .header-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        @media (max-width: 850px) { .grid { grid-template-columns: 1fr; } }
         
-        /* 抵抗解読コンテナの拡張 */
-        .card-large { grid-column: span 2; }
-        @media (max-width: 800px) { .card-large { grid-column: span 1; } }
-
-        .band-row { display: flex; gap: 8px; margin-top: 15px; }
-        .band-select { flex: 1; height: 60px; border-radius: 8px; cursor: pointer; border: 2px solid #cbd5e1; font-weight: bold; text-align: center; font-size: 0.9em; }
-        .existence-info { display: block; font-size: 0.75em; color: #94a3b8; margin-top: 4px; height: 1em; }
-
-        /* 回路図のズレ防止対策 */
-        details { background: var(--card); margin-top: 30px; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden; }
-        summary { padding: 15px 20px; font-weight: bold; cursor: pointer; background: #e2e8f0; color: #1e293b; outline: none; }
-        .details-content { padding: 20px; }
-        .ascii-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(480px, 1fr)); gap: 20px; }
-        .ascii-art { 
-            font-family: 'Consolas', 'Monaco', 'Courier New', monospace; 
-            background: #1e293b; color: #00ff41; padding: 20px; border-radius: 8px; 
-            font-size: 13px; line-height: 1.2; overflow-x: auto; white-space: pre;
-            letter-spacing: 0px; /* 文字間隔を固定 */
+        .card { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        h2 { font-size: 1.2em; color: var(--primary); border-bottom: 2px solid var(--border); padding-bottom: 8px; margin: 0 0 15px 0; }
+        label { display: block; font-size: 0.9em; font-weight: bold; color: #34445b; margin-bottom: 5px; }
+        
+        input, select { 
+            width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; 
+            background: var(--card); color: var(--text); margin-bottom: 15px; 
+            box-sizing: border-box; font-size: 1.05em;
         }
         
-        .glossary { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.85em; }
-        .glossary th, .glossary td { border: 1px solid #cbd5e1; padding: 12px; text-align: left; vertical-align: top; }
-        .glossary th { background: #f8fafc; color: var(--primary); width: 140px; }
-        .glossary b { color: #1e293b; }
+        .result-box { padding: 15px; background: var(--result-bg); border-radius: 8px; border: 1px solid var(--primary); min-height: 30px; }
+        .res-val { color: var(--primary); font-weight: bold; font-size: 1.4em; }
+        .theme-toggle { cursor: pointer; padding: 8px 16px; border-radius: 20px; border: 2px solid var(--primary); background: transparent; color: var(--primary); font-weight: bold; font-size: 0.8em; }
+        
+        .band-row { display: flex; gap: 6px; margin: 15px 0; }
+        .band-select { flex: 1; height: 50px; border: 2px solid var(--border); }
+        .existence-info { display: block; font-size: 0.75em; color: #ef4444; margin-top: 4px; font-weight: bold; height: 1.1em; }
+
+        details { background: var(--card); margin-top: 30px; border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
+        summary { padding: 15px 20px; font-weight: bold; cursor: pointer; background: var(--border); font-size: 1.1em; }
+        .details-content { padding: 20px; }
+        .ascii-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 20px; }
+        .ascii-art { 
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace; 
+            background: #1e293b; color: #ebf5f1; padding: 20px; border-radius: 10px; 
+            font-size: 14px; line-height: 1.3; white-space: pre; overflow-x: auto; margin-bottom: 10px;
+        }
+        .dyn-val { color: var(--highlight); font-weight: bold; }
+        
+        .glossary th, .glossary td { border: 1px solid var(--border); padding: 12px; font-size: 0.9em; }
+        .mode-info { background: rgba(2, 132, 199, 0.05); padding: 15px; border-radius: 8px; border-left: 4px solid var(--primary); margin-bottom: 15px; font-size: 0.95em; }
     </style>
 </head>
-<body>
+<body data-theme="light">
 
 <div class="container">
-    <h1 style="text-align:center; color:#1e293b; margin-bottom:25px;">電子工作 究極コンパニオンツール</h1>
+    <div class="header-area">
+        <h1>電子工作 究極コンパニオンツール</h1>
+        <button class="theme-toggle" onclick="toggleTheme()">Dark / Light</button>
+    </div>
 
     <div class="grid">
         <div class="card">
-            <h2>1. LED抵抗設計 (安全優先)</h2>
-            <div class="input-group"><label>電源電圧 (Vcc) [V]</label><input type="number" id="vcc" value="5.0" step="0.1" oninput="calc()"></div>
-            <div class="input-group"><label><input type="checkbox" id="use_drop" onchange="calc()" style="width:auto;"> ICドロップ考慮 (NE555使用時等)</label></div>
-            <div class="input-group"><label>LEDのVf [V]</label><input type="number" id="vf" value="3.1" step="0.1" oninput="calc()"></div>
-            <div class="input-group"><label>目標電流 [mA/列]</label><input type="number" id="target_ma" value="20" oninput="calc()"></div>
+            <h2>1. LED抵抗設計</h2>
+            <label>電源電圧 (Vcc) [V]</label><input type="number" inputmode="decimal" id="vcc" value="5.0" step="0.1" oninput="calc()">
+            <label><input type="checkbox" id="use_drop" onchange="calc()" style="height: 15px; width: 15px; margin-bottom:0;"> ICドロップ考慮 (555出力時は約1V低下します)</label>
+            <div style="margin-top:15px;">
+                <label>LED 順方向電圧 (Vf) [V]</label><input type="number" inputmode="decimal" id="vf" value="3.1" step="0.1" oninput="calc()">
+                <label>目標電流 (If) [mA]</label><input type="number" inputmode="decimal" id="target_ma" value="20" oninput="calc()">
+            </div>
             <div class="result-box" id="res_led">---</div>
         </div>
 
         <div class="card">
-            <h2>2. 555 設定 (計算)</h2>
-            <div class="input-group"><label>動作モード</label><select id="mode" onchange="calc()"><option value="astable">無安定 (点滅)</option><option value="mono">単安定 (タイマー)</option></select></div>
-            <div class="input-group"><label>コンデンサ [μF]</label><input type="number" id="c1" value="100" oninput="calc()"></div>
-            <div class="input-group"><label>抵抗 RA [kΩ]</label><input type="number" id="ra" value="10" oninput="calc()"></div>
-            <div id="rb_group" class="input-group"><label>抵抗 RB [kΩ]</label><input type="number" id="rb" value="47" oninput="calc()"></div>
+            <h2>2. 555 タイマー計算</h2>
+            <label>計算中のモード（下図で両方の解説が見れます）</label><select id="mode" onchange="calc()"><option value="astable">無安定 (点滅)</option><option value="mono">単安定 (タイマー)</option></select>
+            <label>コンデンサ C1 [μF] (容量が大きいほどゆっくり動く)</label><input type="number" inputmode="decimal" id="c1" value="100" oninput="calc()">
+            <label>抵抗 RA [kΩ]</label><input type="number" inputmode="decimal" id="ra" value="10" oninput="calc()">
+            <div id="rb_group"><label>抵抗 RB [kΩ]</label><input type="number" inputmode="decimal" id="rb" value="47" oninput="calc()"></div>
             <div class="result-box" id="res_555">---</div>
         </div>
 
         <div class="card">
-            <h2>3. 555 逆引き (抵抗算出)</h2>
-            <div class="input-group"><label>【単安定】目標時間 [秒]</label><input type="number" id="target_sec" value="1.0" step="0.1" oninput="calc()"></div>
-            <div class="result-box" id="res_mono_inv">---</div>
-            <div class="input-group" style="margin-top:20px;"><label>【無安定】目標周波数 [Hz]</label><input type="number" id="target_hz" value="1.0" step="0.1" oninput="calc()"></div>
-            <div class="result-box" id="res_astable_inv">---</div>
-        </div>
-
-        <div class="card">
-            <h2>4. 合成 / 6. 電流逆引き</h2>
-            <div class="input-group"><label>並列抵抗1 [Ω]</label><input type="number" id="comb_r1" value="100" oninput="calc()"></div>
-            <div class="input-group"><label>並列抵抗2 [Ω]</label><input type="number" id="comb_r2" value="100" oninput="calc()"></div>
-            <div class="result-box">並列合成: <span class="res-val" id="res_parallel">---</span> Ω</div>
-            <div class="input-group" style="margin-top:20px;"><label>在庫抵抗 [Ω] → 流れる電流を計算</label><input type="number" id="r_stock" value="100" oninput="calc()"></div>
+            <h2>4 & 6. 在庫 & 合成計算</h2>
+            <div style="display:flex; gap:10px;">
+                <div style="flex:1;"><label>並列 R1 [Ω]</label><input type="number" inputmode="decimal" id="comb_r1" value="100" oninput="calc()"></div>
+                <div style="flex:1;"><label>並列 R2 [Ω]</label><input type="number" inputmode="decimal" id="comb_r2" value="100" oninput="calc()"></div>
+            </div>
+            <div class="result-box" style="margin-bottom:15px;">合成値: <span class="res-val" id="res_parallel">---</span> Ω</div>
+            <label>在庫の抵抗 [Ω] を使った時の電流</label>
+            <input type="number" inputmode="decimal" id="r_stock" value="100" oninput="calc()">
             <div class="result-box" id="res_stock_ma">---</div>
         </div>
 
-        <div class="card card-large">
-            <h2>5. 抵抗カラーコード解読 (4/5本帯・精度)</h2>
-            <div style="max-width: 600px; margin: auto;">
-                <div class="input-group">
-                    <label>抵抗タイプ</label>
-                    <select id="res_type" onchange="toggleFifthBand();calc()">
-                        <option value="4">4本帯 (カーボン抵抗等)</option>
-                        <option value="5">5本帯 (精密・金属皮膜抵抗等)</option>
-                    </select>
+        <div class="card">
+            <h2>5. 抵抗カラーコード解読</h2>
+            <label>帯の本数</label>
+            <select id="res_type" onchange="toggleFifthBand();calc()"><option value="4">4本帯 (一般)</option><option value="5">5本帯 (精密)</option></select>
+            <div class="band-row">
+                <select id="b1" class="band-select" onchange="updateBandColor(this);calc()"></select>
+                <select id="b2" class="band-select" onchange="updateBandColor(this);calc()"></select>
+                <select id="b5" class="band-select" onchange="updateBandColor(this);calc()" style="display:none;"></select>
+                <select id="b3" class="band-select" onchange="updateBandColor(this);calc()"></select>
+                <select id="b4" class="band-select" onchange="updateBandColor(this);calc()"></select>
+            </div>
+            <div class="result-box" style="text-align:center;">
+                <span id="res_color" class="res-val" style="font-size:1.6em;">---</span>
+                <span id="existence_msg_res" class="existence-info"></span>
+            </div>
+        </div>
+
+        <div class="card" style="grid-column: span 2;">
+            <h2>7. コンデンサ解読 (3桁コード)</h2>
+            <div style="display:flex; gap:15px; align-items:center;">
+                <div style="flex:1;">
+                    <label>コード (例: 104 = 0.1μF)</label>
+                    <input type="text" inputmode="numeric" id="cap_code" value="104" maxlength="3" oninput="calc()" style="font-size:1.2em; text-align:center; margin-bottom:0;">
                 </div>
-                <div class="band-row">
-                    <select id="b1" class="band-select" onchange="updateBandColor(this);calc()"></select>
-                    <select id="b2" class="band-select" onchange="updateBandColor(this);calc()"></select>
-                    <select id="b5" class="band-select" onchange="updateBandColor(this);calc()" style="display:none;"></select>
-                    <select id="b3" class="band-select" onchange="updateBandColor(this);calc()"></select>
-                    <select id="b4" class="band-select" onchange="updateBandColor(this);calc()"></select>
-                </div>
-                <div class="result-box" style="text-align: center;">
-                    <span id="res_color" class="res-val" style="font-size: 2em;">---</span>
-                    <span id="existence_msg" class="existence-info"></span>
+                <div style="flex:2;" class="result-box">
+                    容量: <span id="res_cap" class="res-val" style="font-size:1.4em;">---</span>
+                    <span id="existence_msg_cap" class="existence-info"></span>
                 </div>
             </div>
         </div>
     </div>
 
-    <details>
-        <summary>💡 IC内部構造・端子詳細解説</summary>
+    <details open>
+        <summary>💡 回路図と使い方のポイント</summary>
         <div class="details-content">
             <div class="ascii-grid">
-                <div class="ascii-art">
-【無安定：発振・点滅】
-   VCC(+)
-     │
-  ┌──┴───┐
- [RA]     (8)VCC
-  ├───┐   (電源+)
- [RB] (7)DISCH
-  ├───┤   (放電スイッチ)
-  │  (6)THRESH
-  │   (上限監視)
-  ├─┐ (2)TRIG
-  │ │ (下限監視)
- [C1] └──(3)OUT ─── [抵抗]─[LED]─┐
-  │                               │
- GND ────────────(1)GND ──────────┘
-                (電源-)
+                <div>
+                    <div class="mode-info">
+                        <b>【無安定モード】（ひたすら点滅）</b><br>
+                        RAとRBを通ってコンデンサに電気が溜まるとOFF、RBを通って電気が抜けるとONになります。
+                        RBをRAより大きくすると、ONとOFFの時間が近くなり、きれいな点滅になります。
+                    </div>
+                    <div class="ascii-art" id="diag_astable"></div>
                 </div>
-                <div class="ascii-art">
-【単安定：タイマー】
-   VCC(+)
-     │
-  ┌──┴───┐
- [RA]     (8)VCC
-  ├───┬─(7)DISCH
-  │   └─(6)THRESH
- [C1]     (充電監視)
-  │       (3)OUT ─── [出力先]
- GND          │
-              │
- 入力SW ───(2)TRIG
-              │ (トリガー)
-             (1)GND
+                <div>
+                    <div class="mode-info">
+                        <b>【単安定モード】（タイマー）</b><br>
+                        普段はOFFで、2番ピンのスイッチを「ポチッ」と押した瞬間だけONになります。
+                        時間が過ぎると勝手にOFFに戻ります。RAを大きくするとON時間が伸びます。
+                    </div>
+                    <div class="ascii-art" id="diag_mono"></div>
                 </div>
             </div>
 
-            <table class="glossary">
-                <tr><th>GND (1)</th><td><b>グランド:</b> すべての基準となる0Vです。電池のマイナス極に繋ぎます。</td></tr>
-                <tr><th>TRIG (2)</th><td><b>トリガー:</b> 入力端子。このピンの電圧が電源電圧の1/3を下回ると、タイマーが「ON」になり、3番ピンから電圧が出ます。</td></tr>
-                <tr><th>OUT (3)</th><td><b>出力:</b> LEDやブザーを駆動する出口。NE555は約200mAまで、LMC555は約50mAまでの電流を流せます。</td></tr>
-                <tr><th>RESET (4)</th><td><b>リセット:</b> 低電圧（GND直結など）にするとタイマーを強制終了します。通常はVCCに繋いで無効化します。</td></tr>
-                <tr><th>CONT (5)</th><td><b>コントロール:</b> 内部電圧の微調整用。使わない時はノイズ対策として0.01μFのコンデンサを介してGNDに繋ぐのが定石です。</td></tr>
-                <tr><th>THRESH (6)</th><td><b>スレッショルド:</b> 監視端子。コンデンサの電圧が電源の2/3を超えると、タイマーを「OFF」にします。</td></tr>
-                <tr><th>DISCH (7)</th><td><b>ディスチャージ:</b> 放電専用のスイッチ。OFF時に内部でGNDと繋がり、コンデンサに溜まった電気を一気に抜きます。</td></tr>
-                <tr><th>VCC (8)</th><td><b>電源:</b> ICの動作電源（NE: 4.5~16V / LMC: 1.5~15V）。プラス極に繋ぎます。</td></tr>
+            <table style="width:100%; border-collapse:collapse; margin-top:20px;" class="glossary">
+                <tr><th>TRIG (2)</th><td>タイマーを「開始」させるピン。VCCの1/3以下の電圧で反応します。</td></tr>
+                <tr><th>OUT (3)</th><td>ここから出力されます。LEDの長い足(アノード)をここに繋ぎます。</td></tr>
+                <tr><th>THRESH (6)</th><td>タイマーを「終了」させるピン。VCCの2/3以上の電圧で反応します。</td></tr>
+                <tr><th>DISCH (7)</th><td>コンデンサの電気を「捨てる」ピン。タイマー終了時に内部スイッチが入ります。</td></tr>
             </table>
         </div>
     </details>
@@ -172,27 +172,40 @@ const COLORS = [
     {n:"灰", v:8, m:null, c:"#808080", t:0.05}, {n:"白", v:9, m:null, c:"#fff", t:null},
     {n:"金", v:null, m:0.1, c:"#daa520", t:5}, {n:"銀", v:null, m:0.01, c:"#c0c0c0", t:10}
 ];
-
 const E24 = [1.0, 1.1, 1.2, 1.3, 1.5, 1.6, 1.8, 2.0, 2.2, 2.4, 2.7, 3.0, 3.3, 3.6, 3.9, 4.3, 4.7, 5.1, 5.6, 6.2, 6.8, 7.5, 8.2, 9.1];
+const CAP_COMMON = [10, 15, 22, 33, 47, 68];
 
-function getSafeE24(val) {
-    if (val <= 0 || !isFinite(val)) return 0;
-    const log10 = Math.floor(Math.log10(val));
-    const factor = Math.pow(10, log10);
-    const base = val / factor;
-    let nextBase = E24.find(e => e >= base);
-    if (!nextBase) return (1.0 * factor * 10).toFixed(0);
-    return (nextBase * factor).toFixed(nextBase * factor < 10 ? 1 : 0);
+function toggleTheme() {
+    const b = document.body;
+    b.setAttribute('data-theme', b.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
 }
 
-function formatResistor(val) {
-    if (val >= 1000000 && val % 1000000 === 0) return (val / 1000000) + "M";
-    if (val >= 1000) return (val / 1000).toFixed(1).replace(/\.0$/, '') + "k";
-    return Math.round(val);
+function numFix(num, digits=2) {
+    if (!isFinite(num)) return "0";
+    return parseFloat(num.toFixed(digits)).toString();
+}
+
+function getSafeE24(val) {
+    if (val <= 0 || !isFinite(val)) return "0";
+    const f = Math.pow(10, Math.floor(Math.log10(val)));
+    const base = val / f;
+    let next = E24.find(e => e >= base) || 1.0;
+    const res = next * (next < base ? f * 10 : f);
+    return numFix(res, 1);
+}
+
+function updateBandColor(el) {
+    const v = parseInt(el.value);
+    el.style.backgroundColor = COLORS[v].c;
+    el.style.color = (v === 4 || v === 9 || v === 10 || v === 11) ? "black" : "white";
+}
+
+function toggleFifthBand() {
+    document.getElementById('b5').style.display = (document.getElementById('res_type').value === "5") ? "block" : "none";
 }
 
 function init() {
-    ["b1", "b2", "b5", "b3", "b4"].forEach((id) => {
+    ["b1", "b2", "b5", "b3", "b4"].forEach(id => {
         const sel = document.getElementById(id);
         COLORS.forEach((c, i) => {
             if((id==="b1"||id==="b2"||id==="b5") && c.v === null) return;
@@ -209,66 +222,105 @@ function init() {
     calc();
 }
 
-function toggleFifthBand() {
-    const is5 = (document.getElementById('res_type').value === "5");
-    document.getElementById('b5').style.display = is5 ? "block" : "none";
-}
-
-function updateBandColor(el) {
-    const v = parseInt(el.value);
-    el.style.backgroundColor = COLORS[v].c;
-    el.style.color = (v === 4 || v === 9 || v === 10 || v === 11) ? "black" : "white";
-}
-
 function calc() {
-    const cVal = (parseFloat(document.getElementById('c1').value) || 0) / 1000000;
+    const ra = parseFloat(document.getElementById('ra').value) || 0;
+    const rb = parseFloat(document.getElementById('rb').value) || 0;
+    const c1 = parseFloat(document.getElementById('c1').value) || 0;
     const vcc = parseFloat(document.getElementById('vcc').value) || 0;
     const vf = parseFloat(document.getElementById('vf').value) || 0;
+    const mode = document.getElementById('mode').value;
     const v_eff = vcc - (document.getElementById('use_drop').checked ? 1.0 : 0);
-    const targetMa = parseFloat(document.getElementById('target_ma').value) || 0;
 
-    if (v_eff > vf) {
-        const r_ideal = (v_eff - vf) / (targetMa / 1000);
-        document.getElementById('res_led').innerHTML = `理論値: ${Math.round(r_ideal)} Ω<br>推奨: <span class="res-val">${getSafeE24(r_ideal)}</span> Ω (E24上位)`;
-    } else { document.getElementById('res_led').innerHTML = '<span class="warning">電圧不足</span>'; }
+    // 1. LED
+    const tMa = parseFloat(document.getElementById('target_ma').value) || 0;
+    if(v_eff > vf && tMa > 0) {
+        const ri = (v_eff - vf) / (tMa/1000);
+        document.getElementById('res_led').innerHTML = `推奨抵抗: <span class="res-val">${getSafeE24(ri)}</span> Ω <br><span style="font-size: 0.9em; margin: 10px 0px 10px 0px;">(計算上の理論値:<span style="font-size: 1.3em;">${numFix(ri,0)}</span>Ω)</span>`;
+    } else { document.getElementById('res_led').innerText = "電圧不足"; }
 
-    const ra = (parseFloat(document.getElementById('ra').value) || 0) * 1000;
-    const rb = (parseFloat(document.getElementById('rb').value) || 0) * 1000;
-    if(document.getElementById('mode').value === 'mono') {
-        document.getElementById('rb_group').style.display = 'none';
-        document.getElementById('res_555').innerHTML = `タイマー: <span class="res-val">${(1.1 * ra * cVal).toFixed(2)}</span> 秒`;
+    // 2. 555
+    const cVal = c1 / 1000000;
+    if(mode === 'mono') {
+        document.getElementById('rb_group').style.opacity = 0.3;
+        document.getElementById('res_555').innerHTML = `タイマーON時間: <span class="res-val">${numFix(1.1 * ra * 1000 * cVal, 2)}</span> 秒`;
     } else {
-        document.getElementById('rb_group').style.display = 'block';
-        document.getElementById('res_555').innerHTML = `周波数: <span class="res-val">${(1.44 / ((ra + 2 * rb) * cVal)).toFixed(2)}</span> Hz`;
+        document.getElementById('rb_group').style.opacity = 1;
+        const hz = 1.44 / (((ra*1000) + 2 * (rb*1000)) * cVal);
+        document.getElementById('res_555').innerHTML = `発振周波数: <span class="res-val">${numFix(hz, 2)}</span> Hz`;
     }
 
-    const tSec = parseFloat(document.getElementById('target_sec').value) || 0;
-    const tHz = parseFloat(document.getElementById('target_hz').value) || 0;
-    if(cVal > 0) {
-        document.getElementById('res_mono_inv').innerHTML = `必要 RA: <span class="res-val">${(tSec / (1.1 * cVal) / 1000).toFixed(1)}</span> kΩ`;
-        const invRb = (1.44 / (tHz * cVal) - 10000) / 2;
-        document.getElementById('res_astable_inv').innerHTML = invRb > 0 ? `必要 RB: <span class="res-val">${(invRb/1000).toFixed(1)}</span> kΩ` : '<span class="warning">不可</span>';
+    // 回路図更新 (数値の色を変え、単位をμFに修正)
+    const sRa = `<span class="dyn-val">${numFix(ra,1)}</span>`;
+    const sRb = `<span class="dyn-val">${numFix(rb,1)}</span>`;
+    const sC1 = `<span class="dyn-val">${numFix(c1,1)}</span>`;
+
+    document.getElementById('diag_astable').innerHTML = `【無安定：ずっと点滅】
+  VCC(+)
+    │
+    ├──┬───────┐
+    │  │       │
+ [RA:${sRa}k]      │    (8)VCC
+    │  │       │
+    ├──┼──(7)DISCH
+    │  │       │
+ [RB:${sRb}k]      │
+    │  │       │
+    ├─┬┴──(6)THRESH
+    │ │        │
+    │ └──(2)TRIG
+    │          │
+ [C1:${sC1}μF]    └──(3)OUT ── [LED等]
+    │
+   GND`;
+
+    document.getElementById('diag_mono').innerHTML = `【単安定：ワンショット】
+  VCC(+)
+    │
+    ├──┬───────┐
+    │  │       │
+ [RA:${sRa}k]      │    (8)VCC
+    │  │       │
+    ├──┴──┬──(7)DISCH
+    │     └──(6)THRESH
+ [C1:${sC1}μF]  (3)OUT ── [LED等]
+    │          │
+   GND    SW ─(2)TRIG
+               │
+              (1)GND`;
+
+    // 5. 抵抗解読
+    const resType = document.getElementById('res_type').value;
+    const v1 = parseInt(COLORS[document.getElementById('b1').value].v);
+    const v2 = parseInt(COLORS[document.getElementById('b2').value].v);
+    const mult = COLORS[document.getElementById('b3').value].m;
+    let sigRes = 0;
+    if(resType === "5") {
+        sigRes = v1 * 100 + v2 * 10 + parseInt(COLORS[document.getElementById('b5').value].v);
+    } else {
+        sigRes = v1 * 10 + v2;
     }
+    const rv = sigRes * mult;
+    document.getElementById('res_color').innerHTML = `${rv >= 1000 ? numFix(rv/1000, 2)+'k' : numFix(rv, 0)} Ω (±${COLORS[document.getElementById('b4').value].t}%)`;
+    document.getElementById('existence_msg_res').innerText = E24.some(e => e.toFixed(1) === (sigRes / (resType==="5"?100:10)).toFixed(1)) ? "" : "（一般的ではない数値です）";
 
-    // 抵抗カラーコード判定
-    const is5 = document.getElementById('res_type').value === "5";
-    const sigDigits = is5 ? (COLORS[document.getElementById('b1').value].v * 100 + COLORS[document.getElementById('b2').value].v * 10 + COLORS[document.getElementById('b5').value].v)
-                           : (COLORS[document.getElementById('b1').value].v * 10 + COLORS[document.getElementById('b2').value].v);
-    const colorVal = sigDigits * COLORS[document.getElementById('b3').value].m;
-    const tolerance = COLORS[document.getElementById('b4').value].t;
-    
-    document.getElementById('res_color').innerHTML = `${formatResistor(colorVal)} Ω <span style="font-size: 0.5em; color: #64748b;">(±${tolerance}%)</span>`;
-    
-    // 存在判定 (E24系列ベース)
-    const baseVal = sigDigits / (is5 ? 100 : 10);
-    const exists = E24.some(e => e.toFixed(1) === baseVal.toFixed(1));
-    document.getElementById('existence_msg').innerText = exists ? "" : "（一般的ではない組み合わせです）";
+    // 4 & 6 合成
+    const r1 = parseFloat(document.getElementById('comb_r1').value);
+    const r2 = parseFloat(document.getElementById('comb_r2').value);
+    document.getElementById('res_parallel').innerText = r1*r2 ? numFix((r1*r2)/(r1+r2), 1) : "0";
+    const rs = parseFloat(document.getElementById('r_stock').value);
+    document.getElementById('res_stock_ma').innerHTML = `電流: <span class="res-val">${rs>0 && v_eff>vf ? numFix((v_eff-vf)/rs*1000, 1) : "0"}</span> mA`;
 
-    const r1 = parseFloat(document.getElementById('comb_r1').value) || 0;
-    const r2 = parseFloat(document.getElementById('comb_r2').value) || 0;
-    document.getElementById('res_parallel').innerText = r1*r2 ? Math.round((r1*r2)/(r1+r2)) : 0;
-    const rS = parseFloat(document.getElementById('r_stock').value) || 0;
-    document.getElementById('res_stock_ma').innerHTML = `予測電流: <span class="res-val">${(rS > 0 && v_eff > vf ? ((v_eff - vf) / rS) * 1000 : 0).toFixed(1)}</span> mA`;
+    // 7. コンデンサ
+    const cap = document.getElementById('cap_code').value;
+    if(cap.length === 3) {
+        const c_sig = parseInt(cap.substring(0,2));
+        const c_exp = parseInt(cap.substring(2,3));
+        const pf = c_sig * Math.pow(10, c_exp);
+        const uf = pf / 1000000;
+        const nf = pf / 1000;
+        document.getElementById('res_cap').innerHTML = uf >= 0.1 ? numFix(uf, 3)+' μF' : (nf >= 0.1 ? numFix(nf, 1)+' nF' : pf+' pF');
+        document.getElementById('existence_msg_cap').innerText = CAP_COMMON.includes(c_sig) ? "" : "（一般的ではない数値です）";
+    }
 }
 init();
 </script>
