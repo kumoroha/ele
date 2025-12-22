@@ -6,7 +6,7 @@
     <style>
         :root { 
             --primary: #0284c7; --bg: #f1f5f9; --card: #ffffff; 
-            --text: #233145; --border: #c2c8d0; --result-bg: #f0f9ff;
+            --text: #233145; --border: #a2a8b0; --result-bg: #f0f9ff;
             --highlight: #22c55e; /* 回路図内の動的数値の色（緑） */
             --label: #24344b;
         }
@@ -72,7 +72,7 @@
 
     <div class="grid">
         <div class="card">
-            <h2>1. LED抵抗設計</h2>
+            <h2>1. LED抵抗計算</h2>
             <label>電源電圧 (Vcc) [V]</label><input type="number" inputmode="decimal" id="vcc" value="5.0" step="0.1" oninput="calc()">
             <label><input type="checkbox" id="use_drop" onchange="calc()" style="height: 15px; width: 15px; margin-bottom:0;"> ICドロップ考慮 (555出力時は約1V低下します)</label>
             <div style="margin-top:15px;">
@@ -93,14 +93,14 @@
 
         <div class="card">
             <h2>4 & 6. 在庫 & 合成計算</h2>
-            <div style="display:flex; gap:10px;">
+            <label>在庫の抵抗 [Ω] を使った時の電流 (電圧は、上の1. で設定してください)</label>
+            <input type="number" inputmode="decimal" id="r_stock" value="100" oninput="calc()">
+            <div class="result-box" id="res_stock_ma" style="margin-bottom:15px;">---</div>
+            <div style="display:flex; gap:5px;">
                 <div style="flex:1;"><label>並列 R1 [Ω]</label><input type="number" inputmode="decimal" id="comb_r1" value="100" oninput="calc()"></div>
                 <div style="flex:1;"><label>並列 R2 [Ω]</label><input type="number" inputmode="decimal" id="comb_r2" value="100" oninput="calc()"></div>
             </div>
-            <div class="result-box" style="margin-bottom:15px;">合成値: <span class="res-val" id="res_parallel">---</span> Ω</div>
-            <label>在庫の抵抗 [Ω] を使った時の電流</label>
-            <input type="number" inputmode="decimal" id="r_stock" value="100" oninput="calc()">
-            <div class="result-box" id="res_stock_ma">---</div>
+            <div class="result-box">合成値: <span class="res-val" id="res_parallel">---</span> Ω</div>
         </div>
 
         <div class="card">
