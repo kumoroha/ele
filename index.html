@@ -246,7 +246,8 @@ function calc() {
     } else {
         document.getElementById('rb_group').style.opacity = 1;
         const hz = 1.44 / (((ra*1000) + 2 * (rb*1000)) * cVal);
-        document.getElementById('res_555').innerHTML = `発振周波数: <span class="res-val">${numFix(hz, 2)}</span> Hz`;
+        const duty = ((ra + rb) / (ra + 2 * rb)) * 100;
+        document.getElementById('res_555').innerHTML = `発振周波数: <span class="res-val">${numFix(hz, 2)}</span> Hz<br><span style="font-size: 1.0em;">デューティ比 (ON時間): <span class="res-val" style="font-size:1.4em;">${numFix(duty, 1)}</span> %</span>`;
     }
 
     // 回路図更新 (数値の色を変え、単位をμFに修正)
