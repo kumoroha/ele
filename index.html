@@ -23,21 +23,21 @@
             font-size: 17px; /* ★ここで全体の文字サイズを操作★ */
         }
         .container { max-width: 1200px; margin: auto; }
-        .header-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .header-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
         @media (max-width: 850px) { .grid { grid-template-columns: 1fr; } }
         
         .card { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        h2 { font-size: 1.2em; color: var(--primary); border-bottom: 2px solid var(--border); padding-bottom: 8px; margin: 0 0 15px 0; }
-        label { display: block; font-size: 0.9em; font-weight: bold; color: var(--label); margin-bottom: 5px; }
+        h2 { font-size: 1.3em; color: var(--primary); border-bottom: 2px solid var(--border); padding-bottom: 8px; margin: 0 0 15px 0; }
+        label { display: block; font-size: 0.95em; font-weight: bold; color: var(--label); margin-bottom: 5px; }
         
         input, select { 
             width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; 
             background: var(--card); color: var(--text); margin-bottom: 15px; 
-            box-sizing: border-box; font-size: 1.05em;
+            box-sizing: border-box; font-size: 1.1em;
         }
         
-        .result-box { padding: 15px; background: var(--result-bg); border-radius: 8px; border: 1px solid var(--primary); min-height: 30px; }
+        .result-box { padding: 15px; background: var(--result-bg); border-radius: 8px; border: 1px solid var(--primary); min-height: 40px; }
         .res-val { color: var(--primary); font-weight: bold; font-size: 1.4em; }
         .theme-toggle { cursor: pointer; padding: 8px 16px; border-radius: 20px; border: 2px solid var(--primary); background: transparent; color: var(--primary); font-weight: bold; font-size: 0.8em; }
         
@@ -83,9 +83,9 @@
         <div class="card">
             <h2>2. 555 タイマー計算</h2>
             <label>計算中のモード（下図で両方の解説が見れます）</label><select id="mode" onchange="calc()"><option value="astable">無安定 (点滅)</option><option value="mono">単安定 (タイマー)</option></select>
-            <label>コンデンサ C1 [μF] (容量が大きいほどゆっくり動く)</label><input type="number" inputmode="decimal" id="c1" value="100" oninput="calc()">
-            <label>抵抗 RA [kΩ]</label><input type="number" inputmode="decimal" id="ra" value="10" oninput="calc()">
-            <div id="rb_group"><label>抵抗 RB [kΩ]</label><input type="number" inputmode="decimal" id="rb" value="47" oninput="calc()"></div>
+            <label>コンデンサ C1 [μF] (容量が大きいほどゆっくり動きます)<a href="https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/PK.pdf">PK</a>&nbsp;<a href="https://www.nichicon.co.jp/products/pdfs/vr.pdf">VR</a></label><input type="number" inputmode="decimal" id="c1" value="100" step="0.01" oninput="calc()">
+            <label>抵抗 RA [kΩ] (抵抗 RAも抵抗 RBも、1kΩ以上にしてください)</label><input type="number" inputmode="decimal" id="ra" value="1" step="0.1" oninput="calc()">
+            <div id="rb_group"><label>抵抗 RB [kΩ] (抵抗 RAより圧倒的に大きくすると比が50%に近づきます)</label><input type="number" inputmode="decimal" id="rb" value="6.8" step="0.1" oninput="calc()"></div>
             <div class="result-box" id="res_555">---</div>
         </div>
 
@@ -237,7 +237,7 @@ function calc() {
     const tMa = parseFloat(document.getElementById('target_ma').value) || 0;
     if(v_eff > vf && tMa > 0) {
         const ri = (v_eff - vf) / (tMa/1000);
-        document.getElementById('res_led').innerHTML = `推奨抵抗: <span class="res-val">${getSafeE24(ri)}</span> Ω <br><span style="font-size: 0.9em; margin: 10px 0px 10px 0px;">(計算上の理論値:<span style="font-size: 1.3em;">${numFix(ri,0)}</span>Ω)</span>`;
+        document.getElementById('res_led').innerHTML = `推奨抵抗: <span class="res-val">${getSafeE24(ri)}</span> Ω <br><span style="font-size: 0.9em; margin: 10px 0px 10px 0px;">(計算上の理論値:<span style="font-size: 1.4em;"> ${numFix(ri,0)}</span> Ω)</span>`;
     } else { document.getElementById('res_led').innerText = "電圧不足"; }
 
     // 2. 555
